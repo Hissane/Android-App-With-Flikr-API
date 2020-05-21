@@ -1,32 +1,14 @@
 package com.example.sebti;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
+
 
 import static com.example.sebti.HttpGetRequest.itemTitleStringList;
 
@@ -59,11 +41,17 @@ public class MainActivity extends AppCompatActivity {
 
         //MyImage[] img_list = {img1, img2, img3};
         new HttpGetRequest().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "https://www.flickr.com/services/feeds/photos_public.gne?tags=cats&format=json" );
-
+        try {
+            Thread.sleep(100000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         ImageAdapter adapter = new ImageAdapter(getApplicationContext(), (ArrayList<MyImage>) itemTitleStringList);
         listView = (ListView) findViewById(R.id.list_view);
         listView.setAdapter(adapter);
         //Log.v("JSON", itemTitleStringList.get(0).title);
     }
 
+
 }
+
