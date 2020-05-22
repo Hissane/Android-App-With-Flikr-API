@@ -1,5 +1,6 @@
 package com.example.sebti;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ListView;
@@ -16,11 +17,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-class HttpGetRequest extends AsyncTask<String, Void, String> {
+public class HTTPGetRequest extends AsyncTask<String, Void, String> {
     public static final String REQUEST_METHOD = "GET";
     public static final int READ_TIMEOUT = 1500;
     public static final int CONNECTION_TIMEOUT = 1500;
     public static List<MyImage> itemTitleStringList = new ArrayList<MyImage>();
+    private Context context;
+    private ListView listview;
+
+    public HTTPGetRequest(Context context,ListView listview){
+        this.context = context;
+        this.listview = listview;
+    }
 
     @Override
     protected String doInBackground(String... params){
@@ -65,22 +73,26 @@ class HttpGetRequest extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result){
         JSONObject jsonObject;
         JSONArray itemJSONArray;
-
+        String url;
         String jsonString = result.substring(15, result.length() -1);
         try {
             jsonObject = new JSONObject(jsonString);
             itemJSONArray = jsonObject.getJSONArray("items");
             for(int i = 0; i < itemJSONArray.length(); i++){
-                MyImage var = new MyImage(itemJSONArray.getJSONObject(i).getString("title"));
+                url = itemJSONArray.getJSONObject(i).getJSONObject("media").getString("m");
+                MyImage var = new MyImage(itemJSONArray.getJSONObject(i).getString("title"), url.substring(0, url.length()-6) + ".jpg");
                 itemTitleStringList.add(var);
-                System.out.println(var.title);
+                System.out.println(var.url);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        //Log.v("JSON", itemTitleStringList.get(0).title);
-        //STOPPED ON EXERCISE 10 (not done yet)
+        //Log.v("JSON", itemTitleStringList.get(0).url);
+
+        ImageAdapter adapter = new ImageAdapter(context, (ArrayList<MyImage>) itemTitleStringList);
+        listview.setAdapter(adapter);
         super.onPostExecute(result);
     }
+
 }
