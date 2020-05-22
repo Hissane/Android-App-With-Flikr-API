@@ -9,15 +9,13 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import static com.example.sebti.HttpGetRequest.itemTitleStringList;
-
 class MyImage {
     public String title;
     public String url;
 
-    MyImage(String title) {
+    MyImage(String title, String url) {
         this.title = title;
+        this.url = url;
     }
 }
 
@@ -30,28 +28,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        MyImage img1 = new MyImage("cat");
-        MyImage img2 = new MyImage("dog");
-        MyImage img3 = new MyImage("physics teacher");
-
-        img_list.add(img1);
-        img_list.add(img2);
-        img_list.add(img3);
-
-        //MyImage[] img_list = {img1, img2, img3};
-        new HttpGetRequest().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "https://www.flickr.com/services/feeds/photos_public.gne?tags=cats&format=json" );
-        try {
-            Thread.sleep(100000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        ImageAdapter adapter = new ImageAdapter(getApplicationContext(), (ArrayList<MyImage>) itemTitleStringList);
         listView = (ListView) findViewById(R.id.list_view);
-        listView.setAdapter(adapter);
-        //Log.v("JSON", itemTitleStringList.get(0).title);
+        new HTTPGetRequest(getApplicationContext(), listView).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "https://www.flickr.com/services/feeds/photos_public.gne?format=json&tags=cats" );
+
     }
 
 
 }
-
